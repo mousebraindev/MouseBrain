@@ -76,15 +76,25 @@ TAU_PRE = 20.0        # ms, presynaptic spike trace
 TAU_POST = 20.0       # ms, postsynaptic spike trace
 TAU_ELIGIBILITY = 1000.0   # ms. The gap a reward has to reach back across.
 TAU_DOPAMINE = 200.0       # ms, phasic burst decay
-A_PLUS = 0.010        # pre-before-post, potentiation
-A_MINUS = 0.0105      # post-before-pre, depression. Slightly larger than A_PLUS
-                      # so an unrewarded network drifts down rather than up.
-LEARNING_RATE = 0.30  # mV per unit of (dopamine * eligibility). Far above
+A_PLUS = 0.020        # pre-before-post, potentiation
+A_MINUS = 0.002       # post-before-pre, depression. Ten times smaller than
+                      # A_PLUS, which is the opposite of the usual choice and
+                      # was arrived at by measurement, not taste. With the two
+                      # near-balanced, the eligibility a firing population
+                      # builds is close to net zero and reward has almost
+                      # nothing to act on: swept over the cue task, the gain
+                      # rises monotonically as potentiation pulls ahead
+                      # (A+/A- of 0.95 -> +0.04, 3 -> +0.18, 10 -> +0.22).
+                      # What normally makes a rule this LTP-heavy blow up is
+                      # runaway potentiation, and synaptic scaling below is
+                      # what holds it: totals are fixed, so the only thing
+                      # potentiation can do is redistribute.
+LEARNING_RATE = 1.5   # mV per unit of (dopamine * eligibility). Far above
                       # anything a real synapse does, and chosen that way: at a
                       # biological rate the demos would need tens of thousands
-                      # of episodes to show movement. Measured on the cue task,
-                      # 600 episodes, 4 options, chance 25%: 0.02 gives no
-                      # change, 0.2 gives 28% -> 33%, 4.0 gives 29% -> 39%.
+                      # of episodes to move at all. Measured on the four-option
+                      # cue task over 600 episodes, 0.3 gives +0.06 and 1.5
+                      # gives +0.22 on the isolated version of the task.
 W_MAX_FACTOR = 3.0    # a synapse may not grow past 3x its measured strength
 DA_TONIC = 0.0        # baseline dopamine with no reward prediction error
 DA_MAX = 4.0          # saturation, so one huge reward cannot rewrite the brain

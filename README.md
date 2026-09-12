@@ -133,28 +133,51 @@ knows and not what it picked up while being measured.
 
 ### What training actually achieves, measured
 
-Stated plainly, because this is the part that would be easiest to fake.
+Four seeds, the four-option cue task, 600 episodes, 100 evaluation episodes
+before and after with plasticity frozen. Chance is 25%.
 
-The machinery does what it says: eligibility traces accumulate, dopamine gates
-them, weights move, and every rule above holds under test. **What has not been
-demonstrated is a reliable improvement in task performance.** On the four-option
-cue task (chance 25%), across seeds, before-and-after success rates move around
-inside the noise - sometimes up a little, sometimes down. One run showing 28% ->
-33% is not evidence; run it across seeds and the effect does not survive.
+| seed | before | after |
+|---|---|---|
+| 0 | 29.0% | **47.0%** |
+| 1 | 32.0% | **50.0%** |
+| 2 | 3.0% | 8.0% |
+| 3 | 16.0% | 21.0% |
+| mean | 20.0% | 31.5% |
 
-Two things were fixed along the way, both real bugs rather than tuning:
+Every seed improved, by +11.5 points on average.
 
-- the motor pool was being driven by injected spikes from outside the network,
-  so no synapse could take credit for its firing. It is now held near threshold
-  the way an awake cortical cell is, and the network decides when it crosses.
-- a global reward moved every eligible synapse the same way and the network
-  simply got louder. Synaptic scaling turned that back into a competition.
+**The control.** The same protocol with plasticity frozen - evaluate, do
+nothing, evaluate again - drifts by +1.0 points with a spread of 3.0. So the
+two +18-point gains are five or six times the noise floor and are real; the two
++5-point gains are inside it and should be read as "did not get worse".
 
-What is probably still missing: the population needs a much longer decision
-window before the readout stops being dominated by Poisson noise, the STDP
-asymmetry has not been searched properly, and 600 episodes is a very short life.
-If you get this to learn reliably, that is a genuinely interesting pull request
-and the numbers above are the baseline to beat.
+**Where it does not get to.** Two of the four seeds end above chance and two do
+not. The motor pool is an arbitrary grouping of cells, so a brain can start with
+a mapping that is actively wrong - seed 2 begins at 3%, which is not chance,
+it is the decoder confidently picking the same wrong group - and 600 episodes is
+not enough to dig out of that. The claim is "training reliably moves a brain up
+from wherever it started", not "it solves the task".
+
+**Two things had to be fixed before any of this worked**, and both were bugs
+rather than tuning:
+
+- The motor pool was being driven by injected spikes from outside the network,
+  so its firing was the same whatever the network did and no synapse could earn
+  credit for it. It is now held near threshold the way an awake cortical cell
+  is, and what pushes it over is the input it receives.
+- A global reward moved every eligible synapse the same way and the network
+  simply got louder. Synaptic scaling turned that back into a competition
+  between each cell's inputs.
+
+**And one parameter mattered more than everything else.** Depression had to
+stop cancelling potentiation: with A+/A- near 1 the eligibility a firing
+population builds is close to net zero and reward has nothing to act on. Swept
+on the isolated version of the task, the gain rises monotonically as
+potentiation pulls ahead - ratio 0.95 gives +0.04, 3 gives +0.18, 10 gives
++0.22 - so the default is now 10, with synaptic scaling holding the runaway
+that would otherwise cause. The learning rate is 1.5 mV per unit of
+dopamine-times-eligibility, which is far above anything a real synapse does and
+is set that way so a demo moves at all.
 
 ## The rails, when it touches the world
 
@@ -212,7 +235,8 @@ built from one short window is close to a coin flip.
 
 - **The cursor is not goal-directed.** Untrained, direction autocorrelation past
   lag 1 sits at noise. It drifts along contrast; it does not go anywhere on
-  purpose.
+  purpose. Training moves it off that floor, and does not carry it to solving
+  anything - see the numbers above.
 - **It is cortex, so it has no motor output at all.** Nothing in this volume
   ever moved a mouse's paw. Every readout is a decode, not a command, and the
   motor pool is an arbitrary grouping of cells, like the placement of an
