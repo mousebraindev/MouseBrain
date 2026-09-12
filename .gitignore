@@ -1,0 +1,26 @@
+# the connectome itself: 3 GB of public data, rebuilt by `cortex build`
+data/
+build/
+*.npz
+*.npy
+*.csv.gz
+
+# trained brains are artefacts, not source
+checkpoints/
+*.brain
+
+# never
+.env
+.env.*
+*.key
+*.pem
+secrets*
+profile/
+.venv/
+venv/
+__pycache__/
+*.egg-info/
+dist/
+.pytest_cache/
+.DS_Store
+_sweep.txt
