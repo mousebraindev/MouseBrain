@@ -1,12 +1,25 @@
 # mousecortex
 
-A cubic millimetre of mouse visual cortex you can attach to anything, and train
-with reward.
+**A cubic millimetre of mouse visual cortex you can attach to anything, and train with reward.**
 
-71,807 neurons. 2,338,483 signed connections. 7,296,357 synapses. Every one of
-them measured from a real mouse by electron microscopy, and every cell's
-preferred direction of motion measured from that same mouse while it watched
-video.
+[![license](https://img.shields.io/badge/license-MIT-ccff00?style=flat-square&labelColor=10130e)](LICENSE)
+[![python](https://img.shields.io/badge/python-3.9%20%E2%80%93%203.12-ccff00?style=flat-square&labelColor=10130e)](pyproject.toml)
+[![dependencies](https://img.shields.io/badge/runtime%20deps-numpy%20%2B%20scipy-ccff00?style=flat-square&labelColor=10130e)](pyproject.toml)
+[![status](https://img.shields.io/badge/status-pre--release-6d7763?style=flat-square&labelColor=10130e)](#training-it-yourself)
+
+<!-- After pushing, add the live workflow badge:
+[![ci](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+-->
+
+| | |
+|---|---|
+| **71,807** | neurons, every one traced by electron microscopy |
+| **2,338,483** | signed connections between them |
+| **7,296,357** | synapses |
+| **one mouse** | wiring and direction tuning from the same animal |
+
+The direction of motion each cell prefers was measured from that same mouse while it
+watched video, so the wiring and the tuning belong to one animal rather than two studies.
 
 ```python
 from cortex import Brain
@@ -20,6 +33,26 @@ brain.reward(+1.0)            # dopamine, and it learns from it
 pip install -e .
 python -m cortex.cli demo     # about 15 seconds
 ```
+
+![Three panels drawn from the package itself: a polar histogram of what directions the population prefers, a before-and-after chart of four training seeds against the frozen control, and a scatter of decisions showing how a reward shifts them.](docs/hero.png)
+
+*Drawn by `python tools/figure.py`, from a live `Brain`. Panel B plots the training run recorded [below](#what-training-actually-achieves-measured).*
+
+---
+
+**Contents**
+
+[What it is](#what-it-is) ·
+[It runs without the data](#it-runs-without-the-data) ·
+[Use it on your own problem](#use-it-on-your-own-problem) ·
+[Reward and dopamine](#reward-and-what-dopamine-actually-does-here) ·
+[Training it yourself](#training-it-yourself) ·
+[The rails](#the-rails-when-it-touches-the-world) ·
+[Nothing personal ships](#nothing-personal-ships) ·
+[Four things the data did not want to do](#four-things-the-data-did-not-want-to-do) ·
+[The data](#the-data) ·
+[Install](#install) ·
+[Credits](#credits)
 
 ---
 
@@ -230,31 +263,6 @@ control steps, direction autocorrelation at lag 1 was -0.076: independent draws.
 Carrying state, and integrating over 80 ms instead of 20, brings it to +0.38.
 A decoder cell fires 0.32 times in 20 ms and 79% of them are silent, so a vector
 built from one short window is close to a coin flip.
-
-## What is NOT real, stated plainly
-
-- **The cursor is not goal-directed.** Untrained, direction autocorrelation past
-  lag 1 sits at noise. It drifts along contrast; it does not go anywhere on
-  purpose. Training moves it off that floor, and does not carry it to solving
-  anything - see the numbers above.
-- **It is cortex, so it has no motor output at all.** Nothing in this volume
-  ever moved a mouse's paw. Every readout is a decode, not a command, and the
-  motor pool is an arbitrary grouping of cells, like the placement of an
-  electrode array.
-- **The click is invented.** A fly clicks by stopping, on a stopping neuron.
-  Cortex has no stopping neuron, so a commit here is the population having
-  arrived: firing hard, pulled nowhere. That is a modelling choice made by a
-  person.
-- **Several constants are chosen, not measured.** 0.40 mV per synapse (the fly
-  has a measured 0.275; cortex has no agreed figure), the 4:1 E/I target, the
-  learning rate - which is far above anything a real synapse does, and set that
-  way so a demo shows movement at all. Every one of them is labelled MEASURED or
-  CHOSEN in `cortex/params.py`, with the reasoning next to it.
-- **The digital twin is a model.** Receptive fields and direction tuning come
-  from a network trained on real recordings. The wiring is measured; the tuning
-  is predicted from measurements.
-- **The learning rule is not the mouse's.** Reward-modulated STDP is a model of
-  how dopamine gates plasticity, not something this connectome tells you.
 
 ## The data
 
