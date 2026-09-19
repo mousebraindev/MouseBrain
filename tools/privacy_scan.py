@@ -62,6 +62,8 @@ ALLOW = re.compile(
     r"|your[_-]?key"
     r"|@classmethod|@property|@dataclass|@staticmethod|@abstractmethod|@pytest"
     r"|@param|@returns"
+    # The project's own public account, signed deliberately in the README.
+    r"|@mousebraindev"
     r")", re.I)
 
 

@@ -7,9 +7,9 @@
 [![dependencies](https://img.shields.io/badge/runtime%20deps-numpy%20%2B%20scipy-ccff00?style=flat-square&labelColor=10130e)](pyproject.toml)
 [![status](https://img.shields.io/badge/status-pre--release-6d7763?style=flat-square&labelColor=10130e)](#training-it-yourself)
 
-<!-- After pushing, add the live workflow badge:
-[![ci](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
--->
+[![ci](https://github.com/mousebraindev/MouseBrain/actions/workflows/ci.yml/badge.svg)](https://github.com/mousebraindev/MouseBrain/actions/workflows/ci.yml)
+
+Built by [@mousebraindev](https://x.com/mousebraindev) on X.
 
 | | |
 |---|---|
